@@ -1,0 +1,30 @@
+{
+  "contributions": [
+    {
+      "id": "sample-work-item-menu",
+      "type": "ms.vss-web.action",
+      "targets": ["ms.vss-work-web.work-item-context-menu"],
+      "properties": {
+        "text": "This Time For Sure!",
+        "name": "Sample work item menu",
+        "toolbarText": "This Time For Sure!",
+        "uri": "dist/WorkItemMenu/WorkItemMenu.html",
+        "icon": {
+          "light": "static/add-grey.png",
+          "dark": "static/add-green.png"
+        },
+        "registeredObjectId": "work-item-menu-action"
+      }
+    },
+    {
+      "id": "my-dialog",
+      "type": "ms.vss-web.external-content",
+      "description": "My dialog",
+      "targets": [],
+      "properties": {
+        "uri": "MyDialog.html"
+      }
+    }
+  ],
+  "scopes": ["vso.work"]
+}
