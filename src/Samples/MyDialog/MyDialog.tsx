@@ -15,6 +15,8 @@ interface IPanelContentState {
 
 const MyDialog: React.FC = () => {
     const [message, setMessage] = useState("");
+    const [originalHours, setOriginalHours] = useState(0);
+    const [updatedHours, setUpdatedHours] = useState(0);
     useEffect(() => {
         SDK.init();
 
@@ -22,6 +24,12 @@ const MyDialog: React.FC = () => {
             const config = SDK.getConfiguration();
             const message = config.message || "Custom dialog message";
             setMessage(message);
+
+            const originalHours = config.originalHours ?? 0;
+            setOriginalHours(originalHours);
+
+            const updatedHours = config.updatedHours ?? 0;
+            setUpdatedHours(updatedHours);
 
             if (config.dialog) {
                 // Give the host frame the size of our dialog content so that the dialog can be sized appropriately.
@@ -50,6 +58,8 @@ const MyDialog: React.FC = () => {
     return (
         <div className="sample-panel flex-column flex-grow">
             {message}
+            <div>Original hours: {originalHours}</div>
+            <div>Updated hours: {updatedHours}</div>
             <div
                 className="flex-grow flex-column flex-center justify-center"
                 style={{ border: "1px solid #eee", margin: "10px 0" }}

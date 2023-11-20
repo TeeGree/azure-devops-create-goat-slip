@@ -4,6 +4,10 @@ import {
     CommonServiceIds,
     IHostPageLayoutService,
 } from "azure-devops-extension-api";
+import {
+    IWorkItemFormService,
+    WorkItemTrackingServiceIds,
+} from "azure-devops-extension-api/WorkItemTracking";
 
 SDK.register("work-item-menu-action", () => {
     return {
@@ -11,6 +15,20 @@ SDK.register("work-item-menu-action", () => {
             const dialogSvc = await SDK.getService<IHostPageLayoutService>(
                 CommonServiceIds.HostPageLayoutService
             );
+
+            const workItemFormService =
+                await SDK.getService<IWorkItemFormService>(
+                    WorkItemTrackingServiceIds.WorkItemFormService
+                );
+            const originalHours = (await workItemFormService.getFieldValue(
+                "hours",
+                { returnOriginalValue: true }
+            )) as number;
+            const updatedHours = (await workItemFormService.getFieldValue(
+                "hours",
+                { returnOriginalValue: false }
+            )) as number;
+
             dialogSvc.openCustomDialog(
                 SDK.getExtensionContext().id + ".my-dialog",
                 {
@@ -18,6 +36,8 @@ SDK.register("work-item-menu-action", () => {
                     configuration: {
                         message: "Enter Time Slip Description:",
                         dialog: true,
+                        originalHours,
+                        updatedHours,
                     },
                 }
             );
