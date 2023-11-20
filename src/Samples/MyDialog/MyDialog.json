@@ -1,0 +1,11 @@
+{
+    "contributions": [
+        {
+            "id": "my-dialog",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "uri": "dist/MyDialog/MyDialog.html"
+            }
+        }
+    ]
+}
