@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "tg-samples",
   "publisher": "tee-gree",
-  "version": "1.1.12",
+  "version": "1.1.20",
   "name": "Extension Sample",
   "description": "Azure DevOps extension sample",
   "categories": ["Azure Pipelines"],

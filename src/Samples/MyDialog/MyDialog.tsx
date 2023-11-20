@@ -1,22 +1,14 @@
-import "./MyDialog.scss";
-
+import classes from "./MyDialog.scss";
 import React, { useEffect, useState } from "react";
 import * as SDK from "azure-devops-extension-sdk";
-
-import { Button } from "@mui/material";
-import { ButtonGroup } from "azure-devops-ui/ButtonGroup";
+import { Button, Input } from "@mui/material";
 import { showRootComponent } from "../../Common";
-
-interface IPanelContentState {
-    message?: string;
-    toggleValue?: boolean;
-    ready?: boolean;
-}
 
 const MyDialog: React.FC = () => {
     const [message, setMessage] = useState("");
     const [originalHours, setOriginalHours] = useState(0);
     const [updatedHours, setUpdatedHours] = useState(0);
+    const [description, setDescription] = useState("");
     useEffect(() => {
         SDK.init();
 
@@ -41,7 +33,7 @@ const MyDialog: React.FC = () => {
                 // // we are visible in this callback.
                 // SDK.resize();
                 // });
-                SDK.resize(400, 400);
+                SDK.resize(400, 200);
             }
         });
     }, []);
@@ -57,23 +49,35 @@ const MyDialog: React.FC = () => {
 
     return (
         <div className="sample-panel flex-column flex-grow">
-            {message}
             <div>Original hours: {originalHours}</div>
-            <div>Updated hours: {updatedHours}</div>
-            <div
-                className="flex-grow flex-column flex-center justify-center"
-                style={{ border: "1px solid #eee", margin: "10px 0" }}
-            >
-                Sample time slip description
+            <div>Unsaved hours: {updatedHours}</div>
+            {message}
+            <div style={{ width: "100%" }}>
+                <Input
+                    sx={{
+                        color: "inherit !important",
+                        width: "100%",
+                        marginTop: "10px",
+                        marginBottom: "10px",
+                    }}
+                    className={classes["time-slip-description"]}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Sample time slip description"
+                />
             </div>
-            <ButtonGroup className="sample-panel-button-bar">
+            <div style={{ display: "flex" }}>
                 <Button variant="contained" onClick={() => dismiss()}>
                     OK
                 </Button>
-                <Button variant="contained" onClick={() => dismiss()}>
+                <Button
+                    sx={{ marginLeft: "10px" }}
+                    variant="contained"
+                    onClick={() => dismiss()}
+                >
                     Close
                 </Button>
-            </ButtonGroup>
+            </div>
         </div>
     );
 };

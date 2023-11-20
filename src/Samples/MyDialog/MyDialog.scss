@@ -1,9 +1,15 @@
 @import "node_modules/azure-devops-ui/Core/_platformCommon.scss";
 
 .sample-panel {
-  font-size: $fontSizeM;
+    font-size: $fontSizeM;
 }
 
 .sample-panel-button-bar {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.time-slip-description {
+    color: inherit !important;
 }
