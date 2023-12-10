@@ -1,7 +1,16 @@
 import classes from "./MyDialog.scss";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import * as SDK from "azure-devops-extension-sdk";
-import { Button, CircularProgress, Input } from "@mui/material";
+import {
+    Button,
+    CircularProgress,
+    FormControl,
+    Input,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+} from "@mui/material";
 import { showRootComponent } from "../../Common";
 import {
     IWorkItemFormService,
@@ -14,6 +23,9 @@ const MyDialog: React.FC = () => {
     const [updatedHours, setUpdatedHours] = useState(0);
     const [description, setDescription] = useState("");
     const [addingTimeSlip, setAddingTimeSlip] = useState(false);
+    const [selectedProject, setSelectedProject] = useState("");
+    const [selectedTask, setSelectedTask] = useState("");
+    const [selectedLaborCode, setSelectedLaborCode] = useState("");
 
     useEffect(() => {
         SDK.init();
@@ -39,7 +51,7 @@ const MyDialog: React.FC = () => {
                 // // we are visible in this callback.
                 // SDK.resize();
                 // });
-                SDK.resize(400, 200);
+                SDK.resize(400, 500);
             }
         });
     }, []);
@@ -50,6 +62,18 @@ const MyDialog: React.FC = () => {
         const workItemFormService = await SDK.getService<IWorkItemFormService>(
             WorkItemTrackingServiceIds.WorkItemFormService
         );
+
+        const now = new Date();
+
+        await workItemFormService.setFieldValues({
+            "Custom.TimeTrackingProject": selectedProject,
+            "Custom.TimeTrackingTask": selectedTask,
+            "Custom.TimeTrackingLaborCode": selectedLaborCode,
+            "Custom.LastTimeSlipCreation": new Date(
+                now.getTime() - now.getTimezoneOffset() * 60000
+            ).toISOString(),
+            "Custom.LastTimeSlipDescription": description,
+        });
 
         // save azure devops work item
         await workItemFormService.save();
@@ -89,6 +113,149 @@ const MyDialog: React.FC = () => {
         <div className="sample-panel flex-column flex-grow">
             <div>Added hours: {updatedHours - originalHours}</div>
             {message}
+            <FormControl
+                sx={{
+                    width: 200,
+                    marginTop: "10px",
+                    marginBottom: "10px",
+                    color: "white",
+                }}
+            >
+                <InputLabel
+                    sx={{
+                        color: "white",
+                    }}
+                >
+                    Project
+                </InputLabel>
+                <Select
+                    sx={{
+                        color: "white",
+                        borderColor: "white",
+                        ".MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        ".MuiSvgIcon-root ": {
+                            fill: "white !important",
+                        },
+                    }}
+                    onChange={(
+                        event: SelectChangeEvent<string | number>,
+                        _child: ReactNode
+                    ) => {
+                        const value = event.target.value.toString();
+                        setSelectedProject(value);
+                    }}
+                    placeholder="Product"
+                    value={selectedProject}
+                >
+                    <MenuItem value="GrizzleUtils">GrizzleUtils</MenuItem>
+                    <MenuItem value="Coding Class">Coding Class</MenuItem>
+                    <MenuItem value="G.O.A.T. Slips">G.O.A.T. Slips</MenuItem>
+                </Select>
+            </FormControl>
+            <FormControl
+                sx={{
+                    width: 200,
+                    marginTop: "10px",
+                    marginBottom: "10px",
+                    color: "white",
+                }}
+            >
+                <InputLabel
+                    sx={{
+                        color: "white",
+                    }}
+                >
+                    Task
+                </InputLabel>
+                <Select
+                    sx={{
+                        color: "white",
+                        borderColor: "white",
+                        ".MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        ".MuiSvgIcon-root ": {
+                            fill: "white !important",
+                        },
+                    }}
+                    onChange={(
+                        event: SelectChangeEvent<string | number>,
+                        _child: ReactNode
+                    ) => {
+                        const value = event.target.value.toString();
+                        setSelectedTask(value);
+                    }}
+                    placeholder="Task"
+                    value={selectedTask}
+                >
+                    <MenuItem value="Development">Development</MenuItem>
+                    <MenuItem value="QA">QA</MenuItem>
+                    <MenuItem value="Project Management">
+                        Project Management
+                    </MenuItem>
+                </Select>
+            </FormControl>
+            <FormControl
+                sx={{
+                    width: 200,
+                    marginTop: "10px",
+                    marginBottom: "10px",
+                    color: "white",
+                }}
+            >
+                <InputLabel
+                    sx={{
+                        color: "white",
+                    }}
+                >
+                    Labor Code
+                </InputLabel>
+                <Select
+                    sx={{
+                        color: "white",
+                        borderColor: "white",
+                        ".MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "white",
+                        },
+                        ".MuiSvgIcon-root ": {
+                            fill: "white !important",
+                        },
+                    }}
+                    onChange={(
+                        event: SelectChangeEvent<string | number>,
+                        _child: ReactNode
+                    ) => {
+                        const value = event.target.value.toString();
+                        setSelectedLaborCode(value);
+                    }}
+                    placeholder="Labor Code"
+                    value={selectedLaborCode}
+                >
+                    <MenuItem value="Support">Support</MenuItem>
+                    <MenuItem value="Meeting">Meeting</MenuItem>
+                    <MenuItem value="Admin">Admin</MenuItem>
+                </Select>
+            </FormControl>
             <div style={{ width: "100%" }}>
                 <Input
                     sx={{
