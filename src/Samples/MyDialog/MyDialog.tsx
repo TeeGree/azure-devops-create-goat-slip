@@ -1,14 +1,20 @@
 import classes from "./MyDialog.scss";
 import React, { useEffect, useState } from "react";
 import * as SDK from "azure-devops-extension-sdk";
-import { Button, Input } from "@mui/material";
+import { Button, CircularProgress, Input } from "@mui/material";
 import { showRootComponent } from "../../Common";
+import {
+    IWorkItemFormService,
+    WorkItemTrackingServiceIds,
+} from "azure-devops-extension-api/WorkItemTracking";
 
 const MyDialog: React.FC = () => {
     const [message, setMessage] = useState("");
     const [originalHours, setOriginalHours] = useState(0);
     const [updatedHours, setUpdatedHours] = useState(0);
     const [description, setDescription] = useState("");
+    const [addingTimeSlip, setAddingTimeSlip] = useState(false);
+
     useEffect(() => {
         SDK.init();
 
@@ -38,6 +44,38 @@ const MyDialog: React.FC = () => {
         });
     }, []);
 
+    // method to save azure devops work item using SDK
+    const saveWorkItem = async () => {
+        // save work item
+        const workItemFormService = await SDK.getService<IWorkItemFormService>(
+            WorkItemTrackingServiceIds.WorkItemFormService
+        );
+
+        // save azure devops work item
+        await workItemFormService.save();
+    };
+
+    const saveTimeSlip = async () => {
+        // save work item
+        setAddingTimeSlip(true);
+        await saveWorkItem();
+        setAddingTimeSlip(false);
+        dismiss();
+    };
+
+    const getAddTimeSlipButton = () => {
+        const content = addingTimeSlip ? <CircularProgress /> : "Add Time Slip";
+        return (
+            <Button
+                sx={{ width: 200 }}
+                variant="contained"
+                onClick={() => saveTimeSlip()}
+            >
+                {content}
+            </Button>
+        );
+    };
+
     const dismiss = () => {
         const config = SDK.getConfiguration();
         if (config.dialog) {
@@ -49,8 +87,7 @@ const MyDialog: React.FC = () => {
 
     return (
         <div className="sample-panel flex-column flex-grow">
-            <div>Original hours: {originalHours}</div>
-            <div>Unsaved hours: {updatedHours}</div>
+            <div>Added hours: {updatedHours - originalHours}</div>
             {message}
             <div style={{ width: "100%" }}>
                 <Input
@@ -67,9 +104,7 @@ const MyDialog: React.FC = () => {
                 />
             </div>
             <div style={{ display: "flex" }}>
-                <Button variant="contained" onClick={() => dismiss()}>
-                    OK
-                </Button>
+                {getAddTimeSlipButton()}
                 <Button
                     sx={{ marginLeft: "10px" }}
                     variant="contained"
